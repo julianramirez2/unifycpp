@@ -1,0 +1,2 @@
+(c -> b) -> int = (c -> b) -> bool
+a = a
