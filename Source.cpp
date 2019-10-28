@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <regex>
@@ -132,10 +132,28 @@ void unify(vector<string> linea) {
 		T = linea[0].substr(aux1 +2);
 	}
 
+	for (int i = 0; i < linea.size(); i++) {
+		string aux = linea[i];
+		int aux2 = 0;
+		for (int j = 0; j < aux.size(); j++) {
+			if (linea[i].at(j) == '(') {
+				aux2++;
+			}
+			else if (linea[i].at(j) == ')') {
+				aux2--;
+			}
+		}
+		if (aux2 != 0) {
+			cout << "Hay errores con los parentesis" << endl;
+			return;
+		}else {
+			aux2 = 0;
+		}
+	}
+
 	string r = FV(T);
 	string r2 = FV(S);
 
-	cout << r << endl;
 
 	if (linea.size() == 0) {
 		cout << "[]";
