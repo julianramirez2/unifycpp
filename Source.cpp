@@ -75,7 +75,6 @@ vector<string> replaces(vector<string> linea, string replace, string to_replace)
 	regex re(replace+"\\b");
 	for (int i = 0; i < linea.size(); i++) {
 		linea[i] = regex_replace(linea[i], re, to_replace);
-		cout << linea[i]<<endl;
 	}
 
 	return linea;
@@ -97,24 +96,52 @@ string FV(string T) {
 	else if (T == "bool") {
 		r = r+"";
 	}
-	else if (regex_match(T, F) || regex_match(T, F2)) {
-			
-		if (regex_match(T, F2)) {
-			int pos = T.find("(");
-			int pos2 = T.find(")");
-			string T1 = T.substr(pos + 1, pos2 - 1);
-			string aux = T.substr(pos2+1);
-			string T2 = aux.substr(aux.find("->") + 3);
+	else if (T.find("->")<100) {
+
+
+		string aux;
+		int aux2 = 0;
+		string T1;
+		string T2;
+		bool aux3 = false;
+		int pos;
+		for (int i = 0; i < T.size(); i++) {
+			if (T.at(i)=='(') {
+				aux3 = true;
+				aux2++;
+			}
+			else if (T.at(i) == ')') {
+				aux2--;
+				pos = i;
+			}
+		}
+
+		if (aux3 == true) {
+			T1 = T.substr(1, pos-1);
+			T2 = T.substr(pos + 5);
 			return FV(T1) + FV(T2);
 		}
 		else {
-			string T1 = T.substr(0, T.find("->") - 1);
-			string T2 = T.substr(T.find("->") + 3);
+			T1 = T.substr(0, T.find("->") - 1);
+			T2 = T.substr(T.find("->") + 3);
 			return FV(T1) + FV(T2);
 		}
+		/*	if (regex_match(T, F2)) {
+				int pos = T.find("(");
+				int pos2 = T.find(")");
+				string T1 = T.substr(pos + 1, pos2 - 1);
+				string aux = T.substr(pos2+1);
+				string T2 = aux.substr(aux.find("->") + 3);
+				return FV(T1) + FV(T2);
+			}
+			else {
+				string T1 = T.substr(0, T.find("->") - 1);
+				string T2 = T.substr(T.find("->") + 3);
+				return FV(T1) + FV(T2);
+			}
+		}
+		*/
 	}
-	
-	
 	return r;
 }
 
@@ -154,14 +181,15 @@ void unify(vector<string> linea) {
 	string r = FV(T);
 	string r2 = FV(S);
 
+	cout <<"Esto es r: "<< r << endl;
 
 	if (linea.size() == 0) {
 		cout << "[]";
 	}
 	else {
 		if (S==T) {
-				linea.erase(linea.begin());
-				unify(linea);
+			linea.erase(linea.begin());
+			unify(linea);
 		}else if(regex_match(S, X) && r.rfind(S)>=100 && S != "int" && S!="bool") {
 			cout << "Reemplazos = { " << S << "/" << T << " }\n";
 			linea.erase(linea.begin());
